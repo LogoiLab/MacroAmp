@@ -21,6 +21,7 @@
     [self.volumeSlider setValue:[[MPMusicPlayerController systemMusicPlayer] volume]];
     [self.songPositionSlider setMaximumValue:[player duration]];
     self.albumArtImage.image = artworkImage;
+    [self.songTitleLabel setText:songTitle];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -76,6 +77,13 @@
     if (asset != nil) {
         NSArray *keys = [NSArray arrayWithObjects:@"commonMetadata", nil];
         [asset loadValuesAsynchronouslyForKeys:keys completionHandler:^{
+            
+            NSArray *titles = [AVMetadataItem metadataItemsFromArray:asset.commonMetadata withKey:AVMetadataCommonKeyTitle keySpace:AVMetadataKeySpaceCommon];
+            
+            AVMetadataItem *title = [titles objectAtIndex:0];
+            songTitle = [title.value copyWithZone:nil];
+            [self.songTitleLabel setText:songTitle];
+            
             NSArray *artworks = [AVMetadataItem metadataItemsFromArray:asset.commonMetadata
                                                                withKey:AVMetadataCommonKeyArtwork
                                                               keySpace:AVMetadataKeySpaceCommon];

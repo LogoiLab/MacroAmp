@@ -18,6 +18,7 @@
     NSTimer *playTimer;
     UIImage *artworkImage;
     int sessionID;
+    NSString *songTitle;
 }
 @property (strong, nonatomic) IBOutlet UISlider *songPositionSlider;
 @property (strong, nonatomic) IBOutlet UISlider *volumeSlider;
@@ -25,6 +26,7 @@
 @property (strong, nonatomic) IBOutlet UILabel *elapsedTimeLabel;
 @property (strong, nonatomic) IBOutlet UIImageView *albumArtImage;
 -(void)beginPlayingAudio:(NSString *)path withSessionID:(int)ID;
+@property (strong, nonatomic) IBOutlet UILabel *songTitleLabel;
 
 
 @end
