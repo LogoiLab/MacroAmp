@@ -198,7 +198,6 @@
                         int start = [[dict objectForKey:@"start_at"] intValue];
                         dispatch_async(dispatch_get_main_queue(), ^(void) {
                             
-                            NSLog(@"Starting at: %d", start);
                             [self.delegate setPlayerTime:start];
                             [self.delegate didSetPaused:isPaused];
                             

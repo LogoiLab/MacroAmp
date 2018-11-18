@@ -166,7 +166,7 @@
     [player setCurrentTime:time];
     playTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(updateTime:) userInfo:nil repeats:YES];
     [[MacroAmpController sharedInstance] setPaused:NO forSessionID:sessionID withCurrentSongTime:[player currentTime]];
-    [player play];
+    [player performSelector:@selector(play) withObject:nil afterDelay:0.2];
 }
 - (IBAction)playPause:(id)sender
 {
