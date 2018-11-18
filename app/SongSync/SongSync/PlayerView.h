@@ -7,13 +7,21 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <AVFoundation/AVFoundation.h>
+#import <MediaPlayer/MediaPlayer.h>
 #import "SongSelectionView.h"
-#include "AppNavigationController.h"
+#import "AppNavigationController.h"
+#import "MacroAmpController.h"
 
-@interface PlayerView : UIViewController
+
+@interface PlayerView : UIViewController <SongSelectionDelegate, MacroAmpControllerDelegate>
 {
     SongSelectionView *ssv;
     AppNavigationController *songSelectionNav;
+    int sessionID;
+    AVAudioPlayer *player;
+    int masterTime;
+    NSTimer *playTimer;
 }
 @property (strong, nonatomic) IBOutlet UIImageView *albumArtImage;
 @property (strong, nonatomic) IBOutlet UILabel *remainingTimeLabel;
@@ -21,5 +29,10 @@
 @property (strong, nonatomic) IBOutlet UISlider *songPositionSlider;
 @property (strong, nonatomic) IBOutlet UIButton *playButton;
 @property (strong, nonatomic) IBOutlet UISlider *volumeSlider;
+
+-(void)setSessionID:(int)ID;
+- (IBAction)sliderValueChanged:(UISlider *)sender;
+-(void)didSelectAudioFile:(NSString *)path;
+- (IBAction)playPause:(id)sender;
 
 @end

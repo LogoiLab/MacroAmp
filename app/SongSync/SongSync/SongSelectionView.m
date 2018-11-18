@@ -22,6 +22,18 @@
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    
+    NSArray *searchPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentPath = [searchPaths objectAtIndex:0];
+    audioFilesPath = [documentPath stringByAppendingPathComponent:@"Audio"];
+    NSLog(audioFilesPath);
+    if (![[NSFileManager defaultManager] fileExistsAtPath:audioFilesPath])
+    {
+        [[NSFileManager defaultManager] createDirectoryAtPath:audioFilesPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    availableFiles = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:audioFilesPath error:nil];
+    
+    
     [self.tableView setBackgroundColor:[UIColor clearColor]];
     _blur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
     _blurView = [[UIVisualEffectView alloc] initWithEffect:_blur];
@@ -29,6 +41,7 @@
     self.tableView.separatorEffect = [UIVibrancyEffect effectForBlurEffect:_blur];
     _blurView.frame = self.tableView.bounds;
     [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@"Close" style:UIBarButtonItemStylePlain target:self action:@selector(dismissModal)]];
+    [self.navigationItem setTitle:@"Select Song"];
     
 }
 
@@ -46,7 +59,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
-    return 3;
+    return [availableFiles count];
 }
 
 
@@ -61,7 +74,7 @@
     }
     cell.backgroundColor = [UIColor clearColor];
     
-    cell.textLabel.text = @"test";
+    cell.textLabel.text = [availableFiles objectAtIndex:indexPath.row];
     UIBlurEffect *b = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
     UIVisualEffectView *blurView = [[UIVisualEffectView alloc] initWithEffect:b];
     cell.selectedBackgroundView = blurView;
@@ -106,21 +119,15 @@
 }
 */
 
-/*
+
 #pragma mark - Table view delegate
 
 // In a xib-based application, navigation from a table can be handled in -tableView:didSelectRowAtIndexPath:
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Navigation logic may go here, for example:
-    // Create the next view controller.
-    <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:<#@"Nib name"#> bundle:nil];
-    
-    // Pass the selected object to the new view controller.
-    
-    // Push the view controller.
-    [self.navigationController pushViewController:detailViewController animated:YES];
+    [self.delegate didSelectAudioFile:[audioFilesPath stringByAppendingPathComponent:[availableFiles objectAtIndex:indexPath.row]]];
+    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
-*/
+
 
 /*
 #pragma mark - Navigation

@@ -8,13 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import "DigitEntryField.h"
-#include "PlayerView.h"
-#include "LoadingView.h"
+#import "ListeningView.h"
+#import "LoadingView.h"
+#import "PlayerView.h"
 
 @interface JoinSessionView : UIViewController <UITextFieldDelegate>
 {
     NSString *sessionCode;
-    PlayerView *pv;
+    ListeningView *listeningView;
     LoadingView *lv;
 }
 @property (strong, nonatomic) IBOutlet DigitEntryField *digit1;

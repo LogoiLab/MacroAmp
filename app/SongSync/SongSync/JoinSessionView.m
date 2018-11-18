@@ -125,15 +125,16 @@
 {
     [self performSelector:@selector(showLoadingView) withObject:nil afterDelay:0.1];
     [self performSelector:@selector(dismissLoadingView) withObject:nil afterDelay:2.0];
-    [self performSelector:@selector(pushPlayerView) withObject:nil afterDelay:2.1];
+    [self performSelector:@selector(pushListeningView) withObject:nil afterDelay:2.1];
 }
--(void)pushPlayerView
+-(void)pushListeningView
 {
-    if (!pv)
+    if (!listeningView)
     {
-        pv = [[PlayerView alloc] init];
+        listeningView = [[ListeningView alloc] init];
     }
-    [[self navigationController] pushViewController:pv animated:YES];
+    [[self navigationController] pushViewController:listeningView animated:YES];
+    
 }
 -(void)showLoadingView
 {
