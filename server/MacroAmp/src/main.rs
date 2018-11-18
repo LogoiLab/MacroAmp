@@ -24,6 +24,7 @@ use rocket::request::{self, Request, FromRequest};
 use std::io;
 use std::path::{Path, PathBuf};
 use std::fs::remove_file;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 use rocket::response::NamedFile;
 
@@ -59,6 +60,7 @@ fn is_paused(id: i32, connection: db::Connection) -> Json<Value> {
 
 #[get("/<id>")]
 fn read(id: i32, connection: db::Connection) -> Json<Value> {
+    sync(id, &connection);
     Json(json!(Session::read(&connection, id)))
 }
 
@@ -105,6 +107,17 @@ impl<'a, 'r> FromRequest<'a, 'r> for ID {
 #[get("/<file..>")]
 fn files(file: PathBuf) -> Option<NamedFile> {
     NamedFile::open(Path::new("./static/").join(file)).ok()
+}
+
+fn sync(id: i32, connection: &db::Connection) {
+    let mut sess: Session = Session::read(connection, id.clone())[0].clone();
+    let curr_time: i32 = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs() as i32;
+    if !sess.paused.clone() {
+        sess = Session{id: sess.id, start_at: sess.start_at + (curr_time - sess.start_on), start_on: curr_time, paused: sess.paused};
+    } else {
+        sess = Session{id: sess.id, start_at: sess.start_at, start_on: curr_time, paused: sess.paused};
+    }
+    Session::update(id, sess, connection);
 }
 
 fn main() {
