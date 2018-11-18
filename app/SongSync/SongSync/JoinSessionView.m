@@ -33,6 +33,14 @@
     [_digit5 setDelegate:self];
     [_digit6 setDelegate:self];
     [_digit1 becomeFirstResponder];
+    NSArray *searchPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentPath = [searchPaths objectAtIndex:0];
+    tempFilesPath = [documentPath stringByAppendingPathComponent:@"temp"];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:tempFilesPath])
+    {
+        [[NSFileManager defaultManager] createDirectoryAtPath:tempFilesPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -80,6 +88,9 @@
         if(currentTag == 6)
         {
             [self connectToSession];
+            
+            
+            
             if(textField.text.length<1)
                 return YES;
             else
@@ -123,18 +134,32 @@
 }
 -(void)connectToSession
 {
-    [self performSelector:@selector(showLoadingView) withObject:nil afterDelay:0.1];
-    [self performSelector:@selector(dismissLoadingView) withObject:nil afterDelay:2.0];
-    [self performSelector:@selector(pushListeningView) withObject:nil afterDelay:2.1];
+    [MacroAmpController sharedInstance].delegate = self;
+    if ([[MacroAmpController sharedInstance] connectToSession:[sessionCode intValue]] != 200)
+    {
+        NSLog(@"Not valid ID");
+    }
+    else
+    {
+        [self showLoadingView];
+        [[MacroAmpController sharedInstance] beginAudioFileDownload:[sessionCode intValue]];
+    }
 }
--(void)pushListeningView
+-(void)audioFileReceived:(NSData *)fileData
 {
+    
     if (!listeningView)
     {
         listeningView = [[ListeningView alloc] init];
     }
-    [[self navigationController] pushViewController:listeningView animated:YES];
-    
+    [fileData writeToFile:[tempFilesPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%d.mp3", [sessionCode intValue]]] atomically:YES];
+    dispatch_async(dispatch_get_main_queue(), ^(void) {
+        
+        //[self performSelector:@selector(loadListeningView:) withObject:[documentPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%d.mp3", [sessionCode intValue]]] afterDelay:0.5];
+        [self dismissLoadingView];
+        [[self navigationController] pushViewController:listeningView animated:YES];
+        [listeningView beginPlayingAudio:[tempFilesPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%d.mp3", [sessionCode intValue]]] withSessionID:[sessionCode intValue]];
+    });
 }
 -(void)showLoadingView
 {

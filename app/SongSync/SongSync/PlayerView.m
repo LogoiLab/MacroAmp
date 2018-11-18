@@ -161,6 +161,13 @@
     [player play];
     [self.playButton setImage:[UIImage imageNamed:@"pause"] forState:UIControlStateNormal];
 }
+-(void)setPlayerTime:(int)time
+{
+    [player setCurrentTime:time];
+    playTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(updateTime:) userInfo:nil repeats:YES];
+    [[MacroAmpController sharedInstance] setPaused:NO forSessionID:sessionID withCurrentSongTime:[player currentTime]];
+    [player play];
+}
 - (IBAction)playPause:(id)sender
 {
     if ([player isPlaying])
@@ -172,10 +179,8 @@
     }
     else
     {
-        playTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(updateTime:) userInfo:nil repeats:YES];
         [self.playButton setImage:[UIImage imageNamed:@"pause"] forState:UIControlStateNormal];
-        [[MacroAmpController sharedInstance] setPaused:NO forSessionID:sessionID withCurrentSongTime:[player currentTime]];
-        [player play];
+        [[MacroAmpController sharedInstance] getCurrentSongTime:sessionID];
     }
 }
 - (void)updateTime:(NSTimer *)timer //Handles all time and slider position changes. Also handles automatic track skipping when a track has finished playing.

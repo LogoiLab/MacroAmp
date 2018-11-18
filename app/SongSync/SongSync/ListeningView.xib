@@ -6,6 +6,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ListeningView">
             <connections>
+                <outlet property="albumArtImage" destination="P4r-dS-MQp" id="nEZ-Ow-SWU"/>
                 <outlet property="elapsedTimeLabel" destination="CgV-fT-gW8" id="jsG-pJ-qyD"/>
                 <outlet property="remainingTimeLabel" destination="6Yd-5e-HTl" id="f6V-PY-Buh"/>
                 <outlet property="songPositionSlider" destination="XqQ-83-RDK" id="Kky-p5-YQI"/>

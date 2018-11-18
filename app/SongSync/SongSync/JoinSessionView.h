@@ -12,11 +12,12 @@
 #import "LoadingView.h"
 #import "PlayerView.h"
 
-@interface JoinSessionView : UIViewController <UITextFieldDelegate>
+@interface JoinSessionView : UIViewController <UITextFieldDelegate, MacroAmpControllerDelegate>
 {
     NSString *sessionCode;
     ListeningView *listeningView;
     LoadingView *lv;
+    NSString *tempFilesPath;
 }
 @property (strong, nonatomic) IBOutlet DigitEntryField *digit1;
 @property (strong, nonatomic) IBOutlet DigitEntryField *digit2;

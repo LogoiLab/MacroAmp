@@ -9,17 +9,22 @@
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
 #import <MediaPlayer/MediaPlayer.h>
+#import "MacroAmpController.h"
 
-@interface ListeningView : UIViewController
+@interface ListeningView : UIViewController <MacroAmpControllerDelegate>
 {
     int masterTime;
     AVAudioPlayer *player;
     NSTimer *playTimer;
+    UIImage *artworkImage;
+    int sessionID;
 }
 @property (strong, nonatomic) IBOutlet UISlider *songPositionSlider;
 @property (strong, nonatomic) IBOutlet UISlider *volumeSlider;
 @property (strong, nonatomic) IBOutlet UILabel *remainingTimeLabel;
 @property (strong, nonatomic) IBOutlet UILabel *elapsedTimeLabel;
--(void)beginPlayingAudio:(NSString *)path;
+@property (strong, nonatomic) IBOutlet UIImageView *albumArtImage;
+-(void)beginPlayingAudio:(NSString *)path withSessionID:(int)ID;
+
 
 @end

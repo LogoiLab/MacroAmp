@@ -51,6 +51,14 @@
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    NSArray *searchPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentPath = [searchPaths objectAtIndex:0];
+    NSString *tempFilesPath = [documentPath stringByAppendingPathComponent:@"temp"];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:tempFilesPath])
+    {
+        [[NSFileManager defaultManager] removeItemAtPath:tempFilesPath error:nil];
+    }
+    [[MacroAmpController sharedInstance] cleanup];
 }
 
 @end

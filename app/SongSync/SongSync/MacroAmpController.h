@@ -12,6 +12,9 @@
 @optional
 
 -(void)startPlayingAudioFile;
+-(void)audioFileReceived:(NSData *)fileData;
+-(void)didSetPaused:(BOOL)isPaused;
+-(void)setPlayerTime:(int)time;
 
 @end
 
@@ -19,6 +22,8 @@
 {
     NSURLSession *session;
     NSString *serverURL;
+    BOOL checkLoop;
+    int currentHostSessionID;
 }
 
 @property (nonatomic, strong) id <MacroAmpControllerDelegate> delegate;
@@ -28,5 +33,11 @@
 -(void)beginNewSessionWithID:(int)ID withSongStartTimestamp:(int)startTimestamp withStartTime:(int)startTime withSongFileData:(NSData *)songData;
 -(void)setPaused:(BOOL)paused forSessionID:(int)ID withCurrentSongTime:(int)time;
 -(void)deleteSession:(int)ID;
+-(long)connectToSession:(int)ID;
+-(void)beginAudioFileDownload:(int)ID;
+-(void)checkPaused:(int)ID;
+-(void)endCheckLoop;
+-(void)getCurrentSongTime:(int)ID;
+-(void)cleanup;
 
 @end

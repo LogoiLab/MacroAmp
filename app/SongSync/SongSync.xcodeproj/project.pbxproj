@@ -23,9 +23,9 @@
 		8776BFE321A084410057B17C /* InitialViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8776BFE121A084410057B17C /* InitialViewController.xib */; };
 		8776BFE521A08B510057B17C /* green-pattern.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 8776BFE421A08B510057B17C /* green-pattern.jpg */; };
 		CE3544C221A12C8300F7351D /* MacroAmpController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3544C121A12C8300F7351D /* MacroAmpController.m */; };
+		CE3544C421A18CCC00F7351D /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = CE3544C321A18CCC00F7351D /* icon.png */; };
 		CEF163F621A0946900D03771 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEF163F521A0946900D03771 /* QuartzCore.framework */; };
 		CEF163F921A096B200D03771 /* MainMenuButton.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF163F821A096B200D03771 /* MainMenuButton.m */; };
-		CEF163FB21A0991B00D03771 /* music-note.png in Resources */ = {isa = PBXBuildFile; fileRef = CEF163FA21A0991B00D03771 /* music-note.png */; };
 		CEF1640821A0A93A00D03771 /* AppNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF1640721A0A93900D03771 /* AppNavigationController.m */; };
 		CEF1640C21A0AA7800D03771 /* JoinSessionView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF1640A21A0AA7800D03771 /* JoinSessionView.m */; };
 		CEF1640D21A0AA7800D03771 /* JoinSessionView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEF1640B21A0AA7800D03771 /* JoinSessionView.xib */; };
@@ -83,10 +83,10 @@
 		8776BFE421A08B510057B17C /* green-pattern.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "green-pattern.jpg"; sourceTree = "<group>"; };
 		CE3544C021A12C8300F7351D /* MacroAmpController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MacroAmpController.h; sourceTree = "<group>"; };
 		CE3544C121A12C8300F7351D /* MacroAmpController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MacroAmpController.m; sourceTree = "<group>"; };
+		CE3544C321A18CCC00F7351D /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		CEF163F521A0946900D03771 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		CEF163F721A096B200D03771 /* MainMenuButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainMenuButton.h; sourceTree = "<group>"; };
 		CEF163F821A096B200D03771 /* MainMenuButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainMenuButton.m; sourceTree = "<group>"; };
-		CEF163FA21A0991B00D03771 /* music-note.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "music-note.png"; sourceTree = "<group>"; };
 		CEF1640621A0A93900D03771 /* AppNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppNavigationController.h; sourceTree = "<group>"; };
 		CEF1640721A0A93900D03771 /* AppNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppNavigationController.m; sourceTree = "<group>"; };
 		CEF1640921A0AA7800D03771 /* JoinSessionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JoinSessionView.h; sourceTree = "<group>"; };
@@ -209,8 +209,8 @@
 				CEF1640F21A0ACF800D03771 /* DigitEntryField.m */,
 				CE3544C021A12C8300F7351D /* MacroAmpController.h */,
 				CE3544C121A12C8300F7351D /* MacroAmpController.m */,
+				CE3544C321A18CCC00F7351D /* icon.png */,
 				8776BFE421A08B510057B17C /* green-pattern.jpg */,
-				CEF163FA21A0991B00D03771 /* music-note.png */,
 				CEF1642921A0CAB300D03771 /* test-art.jpg */,
 				CEF1641821A0C89E00D03771 /* MediaIcons */,
 				8776BFC221A083570057B17C /* Images.xcassets */,
@@ -342,6 +342,7 @@
 			files = (
 				CEF1640D21A0AA7800D03771 /* JoinSessionView.xib in Resources */,
 				8776BFBB21A083570057B17C /* InfoPlist.strings in Resources */,
+				CE3544C421A18CCC00F7351D /* icon.png in Resources */,
 				CEF1641721A0C4F100D03771 /* PlayerView.xib in Resources */,
 				8776BFE521A08B510057B17C /* green-pattern.jpg in Resources */,
 				CEF1643821A0D79B00D03771 /* SongSelectionView.xib in Resources */,
@@ -357,7 +358,6 @@
 				CEF1642621A0CA3200D03771 /* play-button.png in Resources */,
 				CEF1644221A0E6C000D03771 /* LoadingView.xib in Resources */,
 				CEF1642221A0CA2000D03771 /* rewind.png in Resources */,
-				CEF163FB21A0991B00D03771 /* music-note.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

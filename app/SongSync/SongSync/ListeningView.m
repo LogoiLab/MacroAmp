@@ -19,6 +19,8 @@
     [self.view setBackgroundColor:[[UIColor alloc] initWithPatternImage:[UIImage imageNamed:@"test-art.jpg"]]];
     [self.navigationItem setLeftBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@"Leave Session" style:UIBarButtonItemStylePlain target:self action:@selector(returnToMainMenu)]];
     [self.volumeSlider setValue:[[MPMusicPlayerController systemMusicPlayer] volume]];
+    [self.songPositionSlider setMaximumValue:[player duration]];
+    self.albumArtImage.image = artworkImage;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -42,9 +44,77 @@
     self.navigationController.navigationBar.shadowImage = [UIImage new];
     self.navigationController.navigationBar.translucent = YES;
 }
--(void)beginPlayingAudio:(NSString *)path
+-(void)didSetPaused:(BOOL)isPaused
 {
+    if (isPaused)
+    {
+        if (playTimer)
+        {
+            [playTimer invalidate];
+        }
+        [player pause];
+    }
+    else
+    {
+        playTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(updateTime:) userInfo:nil repeats:YES];
+        [player play];
+    }
+}
+-(void)setPlayerTime:(int)time
+{
+    [player setCurrentTime:time];
+}
+-(void)beginPlayingAudio:(NSString *)path withSessionID:(int)ID
+{
+    sessionID = ID;
+    [MacroAmpController sharedInstance].delegate=self;
+    NSURL *fileURL = [NSURL fileURLWithPath:path];
+    NSLog(@"URL: %@", [fileURL absoluteString]);
+    player = [[AVAudioPlayer alloc] initWithContentsOfURL:fileURL error:nil];
     
+    AVAsset *asset = [AVURLAsset URLAssetWithURL:fileURL options:nil];
+    if (asset != nil) {
+        NSArray *keys = [NSArray arrayWithObjects:@"commonMetadata", nil];
+        [asset loadValuesAsynchronouslyForKeys:keys completionHandler:^{
+            NSArray *artworks = [AVMetadataItem metadataItemsFromArray:asset.commonMetadata
+                                                               withKey:AVMetadataCommonKeyArtwork
+                                                              keySpace:AVMetadataKeySpaceCommon];
+            
+            for (AVMetadataItem *item in artworks) {
+                if ([item.keySpace isEqualToString:AVMetadataKeySpaceID3]) {
+                    
+                    // *** WE TEST THE IOS VERSION HERE ***
+                    
+                    if (TARGET_OS_IPHONE && NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_7_1) {
+                        NSData *newImage = [item.value copyWithZone:nil];
+                        artworkImage = [UIImage imageWithData:newImage];
+                    }
+                    else {
+                        NSDictionary *dict = [item.value copyWithZone:nil];
+                        if ([dict objectForKey:@"data"]) {
+                            artworkImage = [UIImage imageWithData:[item dataValue]];
+                        }
+                    }
+                }
+                else if ([item.keySpace isEqualToString:AVMetadataKeySpaceiTunes]) {
+                    // This doesn't appear to get called for images set (ironically) in iTunes
+                    artworkImage = [UIImage imageWithData:[item dataValue]];
+                }
+            }
+            
+            if (artworkImage != nil) {
+                dispatch_sync(dispatch_get_main_queue(), ^{
+                    self.albumArtImage.image = artworkImage;
+                    [self.view setBackgroundColor:[[UIColor alloc] initWithPatternImage:artworkImage]];
+                });
+            }
+            
+        }];
+    }
+    self.songPositionSlider.value = 0.0;
+    self.songPositionSlider.maximumValue = [player duration];
+    masterTime = 0;
+    [[MacroAmpController sharedInstance] checkPaused:sessionID];
 }
 - (void)updateTime:(NSTimer *)timer //Handles all time and slider position changes. Also handles automatic track skipping when a track has finished playing.
 {
@@ -119,6 +189,7 @@
                              //Handle session end
                              [playTimer invalidate];
                              [player pause];
+                             [[MacroAmpController sharedInstance] endCheckLoop];
                              [self dismissViewControllerAnimated:YES completion:nil];
                          }];
     UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];

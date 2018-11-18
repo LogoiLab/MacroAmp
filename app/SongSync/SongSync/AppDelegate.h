@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "InitialViewController.h"
+#include "MacroAmpController.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
