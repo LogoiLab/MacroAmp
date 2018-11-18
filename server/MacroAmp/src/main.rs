@@ -1,116 +1,63 @@
-#![feature(proc_macro_hygiene, decl_macro)]
+#![feature(plugin)]
+#![plugin(rocket_codegen)]
 
-#[macro_use] extern crate rocket;
+extern crate rocket;
 #[macro_use] extern crate rocket_contrib;
 #[macro_use] extern crate serde_derive;
-extern crate rand;
-#[cfg(test)] mod tests;
+#[macro_use] extern crate diesel;
 
-use std::sync::Mutex;
-use std::collections::HashMap;
-use std::time::{SystemTime, UNIX_EPOCH};
+use rocket_contrib::{Json, Value};
 
-//use rand::{thread_rng, Rng};
-use rocket::State;
-use rocket_contrib::json::{Json, JsonValue};
+mod db;
+pub mod schema;
+pub mod session;
 
+use self::db::*;
+use self::schema::*;
 
-// The type to represent the ID of a message.
-type ID = usize;
+use self::session::Session;
 
-// We're going to store all of the messages here. No need for a DB.
-type SessionMap = Mutex<HashMap<ID, Session>>;
-type Epoch = u64;
-
-#[derive(Serialize, Deserialize, Clone)]
-struct Session {
-    id: ID,
-    start_at: Option<u64>,
-    data: Option<String>
-
+#[post("/", format = "application/json", data = "<session>")]
+fn create(session: Json<Session>, connection: db::Connection) -> Json<Session> {
+    let insert = Session { id: session.id, ..session.into_inner() };
+    Json(Session::create(insert, &connection))
 }
 
-// TODO: This example can be improved by using `route` with multiple HTTP verbs.
-
-#[put("/<id>", format = "json", data = "<req>")]
-fn update(id: ID, req: Json<Session>, map: State<SessionMap>) -> Option<JsonValue> {
-    let mut hashmap = map.lock().unwrap();
-    if hashmap.contains_key(&id.clone()) {
-        hashmap.insert(id.clone(), req.0);
-        let mut updated: Session = Session{id: 0, start_at: None, data: None};
-        hashmap.get(&id.clone()).clone().map(|sess| {
-            let old_sess = sess.clone();
-            updated = Session{id: old_sess.id, start_at: Some(SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs() + 5), data: old_sess.data};
-        });
-        hashmap.insert(id.clone(), updated);
-        Some(json!({
-            "code": "200",
-            "status": "ok"
-        }))
-    } else {
-        None
-    }
+#[get("/")]
+fn read_all(connection: db::Connection) -> Json<Value> {
+    Json(json!(Session::read_all(&connection)))
 }
 
-#[get("/<id>", format = "json")]
-fn join(id: ID, map: State<SessionMap>) -> Option<Json<Session>> {
-    let mut hashmap = map.lock().unwrap();
-    let mut updated: Session = Session{id: 0, start_at: None, data: None};
-    hashmap.get(&id.clone()).clone().map(|sess| {
-        let old_sess = sess.clone();
-        updated = Session{id: old_sess.id, start_at: Some(SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs() + 5), data: old_sess.data};
-    });
-    hashmap.insert(id.clone(), updated);
-    hashmap.get(&id.clone()).map(|session| {
-        Json(Session {
-            id: session.id,
-            start_at: session.start_at,
-            data: session.data
-        })
-    })
+#[get("/<id>")]
+fn read(id: i32, connection: db::Connection) -> Json<Value> {
+    Json(json!(Session::read(&connection, id)))
 }
 
-#[post("/<id>", format = "json", data = "<req>")]
-fn new_session(id: ID, req: Json<Session>, map: State<SessionMap>) -> JsonValue {
-    let mut hashmap = map.lock().unwrap();
-    hashmap.insert(id.clone(), req.0);
-    let mut updated: Session = Session{id: 0, start_at: None, data: None};
-    hashmap.get(&id.clone()).clone().map(|sess| {
-        let old_sess = sess.clone();
-        updated = Session{id: old_sess.id, start_at: Some(SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs() + 5), data: old_sess.data};
-    });
-    hashmap.insert(id.clone(), updated);
-    json!({
-        "code": "200",
-        "status": "ok"
-    })
+#[put("/<id>", format = "application/json", data = "<session>")]
+fn update(id: i32, session: Json<Session>, connection: db::Connection) -> Json<Value> {
+    let update = Session { id: Some(id), ..session.into_inner() };
+    Json(json!({
+        "success": Session::update(id, update, &connection)
+    }))
 }
 
-#[catch(404)]
-fn not_found() -> JsonValue {
-    json!({
-        "code": "404",
-        "status": "error",
-        "reason": "Resource was not found."
-    })
+#[delete("/<id>")]
+fn delete(id: i32, connection: db::Connection) -> Json<Value> {
+    Json(json!({
+        "success": Session::delete(id, &connection)
+    }))
 }
 
-#[catch(500)]
-fn server_error() -> JsonValue {
-    json!({
-        "code": "500",
-        "status": "error",
-        "reason": "Internal server error."
-    })
+#[post("/upload", format = "plain", data = "<data>")]
+fn upload(data: Data) -> io::Result<String> {
+    data.stream_to_file("/tmp/upload.mp3").map(|n| n.to_string())
 }
 
-fn rocket() -> rocket::Rocket {
-    rocket::ignite()
-        .mount("/req", routes![update, join, new_session])
-        .register(catchers![not_found, server_error])
-        .manage(Mutex::new(HashMap::<ID, Session>::new()))
-}
 
 fn main() {
-    rocket().launch();
+    rocket::ignite()
+        .manage(db::connect())
+        .mount("/session", routes![create, update, delete, read])
+        .mount("/sessions", routes![read_all])
+        .launch();
 }

@@ -5,14 +5,10 @@ authors = ["Chad Baxter <cbaxter@mail.umw.edu>"]
 edition = "2018"
 
 [dependencies]
-rand = "*"
-rocket = "0.4.0-rc.1"
-rocket_codegen = "0.4.0-rc.1"
+rocket = "0.3"
+rocket_codegen = "0.3"
+rocket_contrib = "0.3"
 serde = "1.0"
-serde_json = "1.0"
 serde_derive = "1.0"
-
-[dependencies.rocket_contrib]
-version = "0.4.0-rc.1"
-default-features = false
-features = ["json"]
+serde_json = "1.0"
+diesel = { version = "1.0.0", features = ["mysql", "r2d2"] }
