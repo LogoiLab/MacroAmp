@@ -8,10 +8,19 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol SongSelectionDelegate <NSObject>
+@optional
+
+-(void)didSelectAudioFile:(NSString *)path;
+
+@end
+
 @interface SongSelectionView : UITableViewController
 {
-    
+    NSString *audioFilesPath;
+    NSArray *availableFiles;
 }
+@property (nonatomic, strong) id <SongSelectionDelegate> delegate;
 
 @property (strong) UIBlurEffect *blur;
 @property (strong) UIVisualEffectView *blurView;

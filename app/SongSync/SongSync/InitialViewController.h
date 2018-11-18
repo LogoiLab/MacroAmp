@@ -8,14 +8,18 @@
 
 #import <UIKit/UIKit.h>
 #import "MainMenuButton.h"
-#import "CreateSessionView.h"
 #import "AppNavigationController.h"
 #import "JoinSessionView.h"
+#import "SongSelectionView.h"
+#import "PlayerView.h"
+#import "MacroAmpController.h"
 
-@interface InitialViewController : UIViewController
+@interface InitialViewController : UIViewController <SongSelectionDelegate>
 {
     AppNavigationController *createSessionNav;
     AppNavigationController *joinSessionNav;
+    PlayerView *pv;
+    SongSelectionView *ssv;
 }
 
 

@@ -41,20 +41,27 @@
 }
 
 - (IBAction)startNewSession:(id)sender{
-    if(!createSessionNav)
-    {
-        createSessionNav = [[AppNavigationController alloc] init];
-        [createSessionNav setViewControllers:@[[[CreateSessionView alloc] init]]];
-    }
+    ssv = [[SongSelectionView alloc] init];
+    createSessionNav = [[AppNavigationController alloc] init];
+    ssv.delegate = self;
+    ssv.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+    createSessionNav.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+    [createSessionNav setViewControllers:@[ssv]];
     [self presentViewController:createSessionNav animated:YES completion:nil];
 }
 
 - (IBAction)joinExistingSession:(id)sender {
-    if(!joinSessionNav)
-    {
-        joinSessionNav = [[AppNavigationController alloc] init];
-        [joinSessionNav setViewControllers:@[[[JoinSessionView alloc] init]]];
-    }
+    joinSessionNav = [[AppNavigationController alloc] init];
+    [joinSessionNav setViewControllers:@[[[JoinSessionView alloc] init]]];
     [self presentViewController:joinSessionNav animated:YES completion:nil];
+}
+-(void)didSelectAudioFile:(NSString *)path
+{
+    if (!pv)
+    {
+        pv = [[PlayerView alloc] init];
+    }
+    [createSessionNav pushViewController:pv animated:YES];
+    [pv didSelectAudioFile:path];
 }
 @end
